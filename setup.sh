@@ -37,6 +37,30 @@ download(){
 	fi
 }
 
+#write to file $1 "$2=$3" 
+#using:writeToFile file value_name value as value_name=value
+writeToFile(){
+	#echo $1:$2 > $DF
+	#echo $2 $3 'in' $1
+	if [ ! -w $1 ]
+	then
+		touch $1
+	fi 
+	if [ "$2" != "" ] 
+	then
+		RES=`sed -i "s/$2.*$/$2=$3/" $1`
+		#RES=`grep -P $2 $1`
+		#echo $RES
+		if ! RES=`grep -P $2 $1`
+		then
+			echo -en "\\n$2:$3" >> $1
+		fi
+	fi
+
+}
+
+
+
 #get framework
 URL="http://www.eu.apache.org/dist//felix/$FRAMEWORK.tar.gz"
 
@@ -67,6 +91,17 @@ download "-O "$FRAMEWORK_FOLDER"bundle/$FILE $URL"
 CONF_DEST="$FRAMEWORK_FOLDER"conf/config.properties
 log "add settings from $CONF_SRC to $CONF_DEST"
 cat $CONF_SRC >> $CONF_DEST
+
+log "change ip($OPENSHIFT_OSGI_IP) for telnet"
+#  $OPENSHIFT_OSGI_IP - cartridge ip
+#add cartridge ip
+if [ $OPENSHIFT_OSGI_IP ] 
+then
+	writeToFile  $CONF_DEST "osgi.shell.telnet.ip" "$OPENSHIFT_OSGI_IP"
+	log "success: ip:$OPENSHIFT_OSGI_IP"
+else
+	log "failure: ip not changed"
+fi
 
 #start framework
 cd $FRAMEWORK_FOLDER
