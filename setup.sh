@@ -68,10 +68,11 @@ download "-O ./$FRAMEWORK.tar.gz $URL"
 
 #define current framework folder
 log "define current framework folder..."
-FRAMEWORK_FOLDER=`tar -tf $FRAMEWORK.tar.gz | grep -m 1 -o .*$VERSION/`
+#FRAMEWORK_FOLDER=`tar -tf $FRAMEWORK.tar.gz | grep -m 1 -o .*$VERSION/`
+FRAMEWORK_FOLDER=lib/
 log "defined folder:$FRAMEWORK_FOLDER"
 log "unarchiving framework..."
-tar -xf ./$FRAMEWORK.tar.gz
+tar -xf   ./$FRAMEWORK.tar.gz -C $FRAMEWORK_FOLDER --strip-components=1
 		
 rm $FRAMEWORK.tar.gz
 

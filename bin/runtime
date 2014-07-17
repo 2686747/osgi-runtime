@@ -1,17 +1,18 @@
 #!/bin/bash
 
 if [ -z "$CONSOLE_HOST" ]; then
-  export CONSOLE_HOST="localhost:16666"
+  export CONSOLE_HOST="${OPENSHIFT_OSGI_IP}:16666"
 fi
 
-function console(){
-  java -Dosgi.console=${CONSOLE_HOST} -cp lib/org.eclipse.osgi.jar:lib/org.apache.felix.bundlerepository.jar:lib/eu.mjelen.runtime.jar eu.mjelen.runtime.Main
-}
+#function console(){
+  #java -Dosgi.console=${CONSOLE_HOST} -cp lib/org.eclipse.osgi.jar:lib/org.apache.felix.bundlerepository.jar:lib/eu.mjelen.runtime.jar eu.mjelen.runtime.Main
+#}
 
 function start(){
   echo "Starting runtime"
-  nohup java -Dosgi.console=${CONSOLE_HOST} -cp lib/org.eclipse.osgi.jar:lib/org.apache.felix.bundlerepository.jar:lib/eu.mjelen.runtime.jar eu.mjelen.runtime.Main </dev/null > logs/runtime.log 2>&1 &
+  nohup java -jar lib/bin/felix.jar  </dev/null > logs/runtime.log 2>&1 &
   echo $! > logs/runtime.pid
+  echo "Process pid:"$!
 }
 
 function stop(){
@@ -37,9 +38,6 @@ function status(){
 }
 
 case $1 in
-    console)
-      console
-      ;;
     start) 
       start
       ;;
