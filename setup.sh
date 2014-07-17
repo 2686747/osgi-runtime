@@ -1,22 +1,77 @@
 #!/bin/bash
+#v.1.201407171141
+#OSGI runtime
+#load Felix Framework Distribution + org.apache.felix.shell-x.x.x.jar, 
+#org.apache.felix.shell.remote-x.x.x.jar, 
+#install this bundles into current folder,
+#copy settings from CONF_SRC to CONF_DEST({framework folder}/conf)
+# start framework
+#exit 1 - if error
 
-rm -rf lib
-mkdir -p lib
 
-wget -O lib/org.eclipse.osgi.jar "http://www.eclipse.org/downloads/download.php?file=/equinox/drops/R-Kepler-201306052000/org.eclipse.osgi_3.9.0.v20130529-1710.jar&r=1"
+#log data
+LOG=logs/setup.log
+DATE_FORMAT="%F.%T.%N"
 
-wget -O lib/org.apache.felix.gogo.runtime.jar "http://mirror.hosting90.cz/apache/felix/org.apache.felix.gogo.runtime-0.10.0.jar"
-wget -O lib/org.apache.felix.gogo.command.jar "http://mirror.hosting90.cz/apache/felix/org.apache.felix.gogo.command-0.12.0.jar"
-wget -O lib/org.apache.felix.gogo.shell.jar "http://mirror.hosting90.cz/apache/felix/org.apache.felix.gogo.shell-0.10.0.jar"
-wget -O lib/org.eclipse.equinox.console.jar "http://www.eclipse.org/downloads/download.php?file=/equinox/drops/R-Kepler-201306052000/org.eclipse.equinox.console_1.0.100.v20130429-0953.jar&r=1"
+#framework version
+VERSION=4.4.1
+FRAMEWORK="org.apache.felix.main.distribution-$VERSION"
 
-wget -O lib/org.apache.felix.bundlerepository.jar "http://mirror.hosting90.cz/apache/felix/org.apache.felix.bundlerepository-1.6.6.jar"
+#settings file
+CONF_SRC=config/config.properties
 
-cd src
+#write to log file in format date:message
+log(){
+	echo `date +"$DATE_FORMAT"`" :$1" >> $LOG
+}
 
-javac -cp ../lib/org.eclipse.osgi.jar eu/mjelen/runtime/Main.java
-jar cf ../lib/eu.mjelen.runtime.jar eu/mjelen/runtime/Main.class
+#download from $1 (parameter for wget), log, exit 1 if failure
+download(){
+	log "downloading:$1"
+	if ( ! wget $1)
+	then
+		log "error downloading:$1"
+		exit 1
+	else
+		log "success downloading"
+	fi
+}
 
-rm eu/mjelen/runtime/Main.class
+#get framework
+URL="http://www.eu.apache.org/dist//felix/$FRAMEWORK.tar.gz"
 
-cd ..
+download "-O ./$FRAMEWORK.tar.gz $URL"
+
+#define current framework folder
+log "define current framework folder..."
+FRAMEWORK_FOLDER=`tar -tf $FRAMEWORK.tar.gz | grep -m 1 -o .*$VERSION/`
+log "defined folder:$FRAMEWORK_FOLDER"
+log "unarchiving framework..."
+tar -xf ./$FRAMEWORK.tar.gz
+		
+rm $FRAMEWORK.tar.gz
+
+#get additional plugins
+FILE="org.apache.felix.shell.remote-1.1.2.jar"
+URL="http://www.eu.apache.org/dist//felix/$FILE"
+download "-O "$FRAMEWORK_FOLDER"bundle/$FILE $URL"
+
+
+
+FILE="org.apache.felix.shell-1.4.3.jar"
+URL="http://www.eu.apache.org/dist//felix/$FILE"
+download "-O "$FRAMEWORK_FOLDER"bundle/$FILE $URL"
+#java -Dfelix.config.properties=file:./config/config.properties -jar $BUNDLE/bin/felix.jar
+
+#add config from config/config.properties
+CONF_DEST="$FRAMEWORK_FOLDER"conf/config.properties
+log "add settings from $CONF_SRC to $CONF_DEST"
+cat $CONF_SRC >> $CONF_DEST
+
+#start framework
+cd $FRAMEWORK_FOLDER
+JAVA_ARG="bin/felix.jar"
+log "starting framework:$JAVA_ARG"
+java -jar $JAVA_ARG
+
+exit 0
