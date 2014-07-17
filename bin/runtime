@@ -10,9 +10,12 @@ fi
 
 function start(){
   echo "Starting runtime"
-  nohup java -jar lib/bin/felix.jar  </dev/null > logs/runtime.log 2>&1 &
-  echo $! > logs/runtime.pid
+  cd lib
+  #nohup java -jar lib/bin/felix.jar  </dev/null > logs/runtime.log 2>&1 &
+  nohup java -jar bin/felix.jar  </dev/null > ../logs/runtime.log 2>&1 &
+  echo $! > ../logs/runtime.pid
   echo "Process pid:"$!
+  
 }
 
 function stop(){
