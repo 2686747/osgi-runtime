@@ -79,13 +79,13 @@ rm $FRAMEWORK.tar.gz
 #get additional plugins
 FILE="org.apache.felix.shell.remote-1.1.2.jar"
 URL="http://www.eu.apache.org/dist//felix/$FILE"
-download "-O "$FRAMEWORK_FOLDER"bundle/$FILE $URL"
+download "-O ${FRAMEWORK_FOLDER}bundle/$FILE $URL"
 
 
 
 FILE="org.apache.felix.shell-1.4.3.jar"
 URL="http://www.eu.apache.org/dist//felix/$FILE"
-download "-O "$FRAMEWORK_FOLDER"bundle/$FILE $URL"
+download "-O ${FRAMEWORK_FOLDER}bundle/$FILE $URL"
 #java -Dfelix.config.properties=file:./config/config.properties -jar $BUNDLE/bin/felix.jar
 
 #add config from config/config.properties
@@ -105,9 +105,9 @@ else
 fi
 
 #start framework
-cd $FRAMEWORK_FOLDER
-JAVA_ARG="bin/felix.jar"
-log "starting framework:$JAVA_ARG"
+#cd $FRAMEWORK_FOLDER
+#JAVA_ARG="bin/felix.jar"
+#log "starting framework:$JAVA_ARG"
 #java -jar $JAVA_ARG &
 
 exit 0
