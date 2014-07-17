@@ -70,11 +70,12 @@ download "-O ./$FRAMEWORK.tar.gz $URL"
 log "define current framework folder..."
 #FRAMEWORK_FOLDER=`tar -tf $FRAMEWORK.tar.gz | grep -m 1 -o .*$VERSION/`
 FRAMEWORK_FOLDER=lib/
+mkdir $FRAMEWORK_FOLDER
 log "defined folder:$FRAMEWORK_FOLDER"
 log "unarchiving framework..."
 tar -xf   ./$FRAMEWORK.tar.gz -C $FRAMEWORK_FOLDER --strip-components=1
 		
-rm $FRAMEWORK.tar.gz
+rm ./$FRAMEWORK.tar.gz
 
 #get additional plugins
 FILE="org.apache.felix.shell.remote-1.1.2.jar"
