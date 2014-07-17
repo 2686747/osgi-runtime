@@ -72,6 +72,6 @@ cat $CONF_SRC >> $CONF_DEST
 cd $FRAMEWORK_FOLDER
 JAVA_ARG="bin/felix.jar"
 log "starting framework:$JAVA_ARG"
-java -jar $JAVA_ARG
+#java -jar $JAVA_ARG &
 
 exit 0

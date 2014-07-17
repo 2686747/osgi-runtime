@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$CONSOLE_HOST" ]; then
-  export CONSOLE_HOST="localhost:15026"
+  export CONSOLE_HOST="localhost:16666"
 fi
 
 function console(){
